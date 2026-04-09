@@ -62,3 +62,72 @@ class CarView(APIView):
 
         car.delete()
         return Response({"message": "Avtomobil o'chirildi"})
+    
+
+##############################################################################3
+
+from rest_framework.views import APIView
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.exceptions import NotFound
+
+from .models import Owner
+
+
+class OwnerView(APIView):
+    def get(self, request: Request, pk=None):
+        if pk:
+            owner = Owner.objects.filter(pk=pk).values().first()
+
+            if not owner:
+                raise NotFound(detail=f"{pk} - Owner topilmadi!")
+            return Response(owner)
+
+        owners = Owner.objects.values()
+        return Response(owners)
+
+    def post(self, request: Request):
+        body = request.data
+        Owner.objects.create(**body)
+        return Response({"message": "Owner saqlandi!"})
+
+    def put(self, request: Request, pk):
+        owner = Owner.objects.filter(pk=pk).first()
+
+        if not owner:
+            raise NotFound(detail=f"{pk} - Owner topilmadi!")
+
+        body = request.data
+
+        owner.first_name = body.get("first_name", owner.first_name)
+        owner.last_name = body.get("last_name", owner.last_name)
+        owner.age = body.get("age", owner.age)
+        owner.email = body.get("email", owner.email)
+        owner.save()
+
+        return Response({"message": "Owner yangilandi!"})
+
+    def patch(self, request: Request, pk):
+        owner = Owner.objects.filter(pk=pk).first()
+
+        if not owner:
+            raise NotFound(detail=f"{pk} - Owner topilmadi!")
+
+        body = request.data
+
+        owner.first_name = body.get("first_name", owner.first_name)
+        owner.last_name = body.get("last_name", owner.last_name)
+        owner.age = body.get("age", owner.age)
+        owner.email = body.get("email", owner.email)
+        owner.save()
+
+        return Response({"message": "Owner yangilandi!"})
+
+    def delete(self, request: Request, pk):
+        owner = Owner.objects.filter(pk=pk).first()
+
+        if not owner:
+            raise NotFound(detail=f"{pk} - Owner topilmadi!")
+
+        owner.delete()
+        return Response({"message": "Owner o'chirildi!"})

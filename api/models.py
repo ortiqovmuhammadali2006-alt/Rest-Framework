@@ -10,3 +10,13 @@ class Car(models.Model):
 
     def __str__(self):
         return f"{self.brand} {self.name}"
+
+
+class Owner(models.Model):
+    first_name = models.CharField(max_length=155)
+    last_name = models.CharField(max_length=155)
+    age = models.IntegerField()
+    email = models.EmailField()
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
