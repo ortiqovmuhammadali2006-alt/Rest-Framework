@@ -3,117 +3,83 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 
+from rest_framework.generics import (
+    ListAPIView,
+    ListCreateAPIView,
+    RetrieveUpdateDestroyAPIView,
+    RetrieveAPIView,
+    CreateAPIView,
+)
+
 from .models import Car, Owner
 from .serailizers import CarSerializer, OwnerSerializer
 
+# _______________________________________________
 
-class CarView(APIView):
-    def get_car(self, pk):
-        car = Car.objects.filter(pk=pk).first()
 
-        if not car:
-            raise NotFound(detail="car topilmadi")
+class CarListView(ListAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
 
+
+# class CarRetrieveView(RetrieveAPIView):
+#     queryset = Car.objects.all()
+#     serializer_class = CarSerializer
+
+
+# class CarCreateView(CreateAPIView):
+#     queryset = Car.objects.all()
+#     serializer_class = CarSerializer
+
+
+# ________________________________________________
+
+
+class CarListCreateView(ListCreateAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+
+
+class CarRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Car.objects.all()
+    serializer_class = CarSerializer
+
+    def get_object(self):
+        car = self.queryset.get(pk=self.kwargs["pk"])
         return car
 
-    def get(self, request, pk=None):
 
-        if pk:
-            car = self.get_car(pk=pk)
-
-            serializer = CarSerializer(car)
-
-            return Response(serializer.data)
-
-        cars = Car.objects.all()
-
-        serializer = CarSerializer(cars, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, pk=None):
-        serializer = CarSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"message": "Ma'lumot muavvaqiyatli saqlandi!!!"})
-
-    def put(self, request, pk=None):
-        car = self.get_car(pk)
-
-        serializer = CarSerializer(instance=car, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"message": "Ma'lumot muavvaqiyatli yangilandi!!!"})
-
-    def patch(self, request: Request, pk=None):
-
-        car = self.get_car(pk)
-
-        serializer = CarSerializer(instance=car, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"message": "Ma'lumot muavvaqiyatli yangilandi!!!"})
-
-    def delete(self, request, pk=None):
-        car = self.get_car(pk)
-
-        car.delete()
-
-        return Response({"message": "Ma'lumotlar o'chirildi"})
+# ____________________________Owner__________________________________
 
 
-class OwnerView(APIView):
-    def get_owner(self, pk):
-        owner = Owner.objects.filter(pk=pk).first()
-        if not owner:
-            raise NotFound(detail="owner topilmadi")
+class OwnerListView(ListAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+
+
+# class OwnerRetrieveView(RetrieveAPIView):
+#     queryset = Owner.objects.all()
+#     serializer_class = OwnerSerializer
+
+
+# class OwnerCreateView(CreateAPIView):
+#     queryset = Owner.objects.all()
+#     serializer_class = OwnerSerializer
+
+# ___________________________________________________________________________
+
+
+class OwnerListCreateView(ListCreateAPIView):
+    serializer_class = OwnerSerializer
+
+    def get_queryset(self):
+        return Owner.objects.all()
+
+
+class OwnerRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+    
+    def get_object(self):
+        owner = self.queryset.get(pk=self.kwargs["pk"])
         return owner
-
-    def get(self, request, pk=None):
-
-        if pk:
-            owner = self.get_owner(pk=pk)
-
-            serializer = OwnerSerializer(owner)
-
-            return Response(serializer.data)
-
-        owners = Owner.objects.all()
-
-        serializer = OwnerSerializer(owners, many=True)
-        return Response(serializer.data)
-
-    def post(self, request, pk=None):
-        serializer = OwnerSerializer(data=request.data)
-
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"message": "Ma'lumot muavvaqiyatli saqlandi!!!"})
-
-    def put(self, request, pk=None):
-        owner = self.get_owner(pk)
-
-        serializer = OwnerSerializer(instance=owner, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"message": "Ma'lumot muavvaqiyatli yangilandi!!!"})
-
-    def patch(self, request: Request, pk=None):
-
-        owner = self.get_owner(pk)
-
-        serializer = OwnerSerializer(instance=owner, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response({"message": "Ma'lumot muavvaqiyatli yangilandi!!!"})
-
-    def delete(self, request, pk=None):
-        owner = self.get_owner(pk)
-
-        owner.delete()
-
-        return Response({"message": "Ma'lumotlar o'chirildi"})

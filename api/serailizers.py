@@ -87,5 +87,9 @@ class OwnerSerializer(serializers.ModelSerializer):
         return value
         
     
-
+class OwnerAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Owner
+        exclude = ("age",)
+        read_only_fields = ("id",)
 
