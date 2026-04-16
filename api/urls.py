@@ -1,17 +1,27 @@
 from django.urls import path
-from .views import CarListView, CarListCreateView, CarRetrieveUpdateDestroyView, OwnerListView
-
+from .views import (
+    CarListCreateView,
+    CarRetrieveUpdateDestroyView,
+    OwnerRetrieveUpdateDestroyView,
+    RegisterView
+)
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    
+)
 
 urlpatterns = [
-    path('cars/', CarListView.as_view(), name='cars'),   
-    path('cars/create', CarListCreateView.as_view(), name='car_create'),
+    path("cars/", CarListCreateView.as_view(), name="car_create"),
+    path("cars/<int:pk>/", CarRetrieveUpdateDestroyView.as_view(), name="car_detail"),
+    path("owners/", CarListCreateView.as_view(), name="car_create"),
+    path(
+        "owners/<int:pk>/",
+        OwnerRetrieveUpdateDestroyView.as_view(),
+        name="owner_detail",
+    ),
+    path('register/', RegisterView.as_view(), name='register'),
     
-    path('owners/', OwnerListView.as_view(), name='owners'),   
-    path('owners/create', CarListCreateView.as_view(), name='car_create'),
-    
-    path('cars/<int:pk>/', CarRetrieveUpdateDestroyView.as_view(), name='car_detail'),
-
-
-
-    
+    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
